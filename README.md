@@ -71,7 +71,7 @@ No changes to the GitHub Actions workflow are needed—the next scheduled or man
 │       └── update-feed.yml   # GitHub Actions schedule and RSSHub container runner
 ├── feeds/
 │   └── ccsumeerut.xml        # Generated RSS feed(s)
-├── fetch_feeds.py            # Fetches, formats (pretty-print + CDATA), and saves feeds
+├── main.py            # Fetches, formats (pretty-print + CDATA), and saves feeds
 └── README.md
 ```
 
@@ -79,7 +79,7 @@ No changes to the GitHub Actions workflow are needed—the next scheduled or man
 
 ## Configuration
 
-You can customize feed behavior at the top of `fetch_feeds.py`:
+You can customize feed behavior at the top of `main.py`:
 
 - `ROUTE_PARAMS`: Defaults to `includeRts=0&includeReplies=0&showQuotedInTitle=1` (original posts only, no retweets or replies).
 - `LIMIT`: Maximum items per feed (default: `20`).
