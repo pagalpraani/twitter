@@ -34,11 +34,13 @@ jobs:
           done
 
       - name: Fetch and format feeds
-        run: python3 fetch_feeds.py
+        id: fetch
+        run: python3 main.py
 
       - name: Commit and push updated feeds
+        if: ${{ !cancelled() && steps.fetch.outcome != 'skipped' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add feeds/*.xml
-          git diff --staged -I '<lastBuildDate>' --quiet || (git commit -m "Update Twitter RSS feeds" && git push)
+          git add feeds/
+          git diff --staged --quiet || (git commit -m "Update Twitter RSS feeds" && git push)
