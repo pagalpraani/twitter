@@ -35,7 +35,7 @@ jobs:
       - name: Fetch Ccsumeerut feed
         run: |
           mkdir -p feeds
-          curl -f -s "http://localhost:1200/twitter/user/Ccsumeerut" -o feeds/ccsumeerut.xml
+          curl -f -s "http://localhost:1200/twitter/user/Ccsumeerut/readable=1&includeRts=0&includeReplies=0&addLinkForPics=1&showQuotedInTitle=1?limit=20" -o feeds/ccsumeerut.xml
 
       - name: Commit and push updated feed
         run: |
