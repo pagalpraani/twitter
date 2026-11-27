@@ -1,0 +1,45 @@
+name: Update Ccsumeerut Twitter RSS
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs every hour
+  workflow_dispatch:    # Lets you trigger manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-feed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Start RSSHub container
+        run: |
+          docker run -d --name rsshub \
+            -p 1200:1200 \
+            -e TWITTER_AUTH_TOKEN="${{ secrets.TWITTER_AUTH_TOKEN }}" \
+            diygod/rsshub
+
+      - name: Wait for RSSHub to boot
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:1200 > /dev/null; then
+              echo "RSSHub is ready"
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Fetch Ccsumeerut feed
+        run: |
+          mkdir -p feeds
+          curl -f -s "http://localhost:1200/twitter/user/Ccsumeerut" -o feeds/ccsumeerut.xml
+
+      - name: Commit and push updated feed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add feeds/ccsumeerut.xml
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update Ccsumeerut RSS feed" && git push)
